@@ -11,6 +11,9 @@ Private application source and release implementation live in
 - Fix application bugs in the private app repository, following its AGENTS.md
   and repository-memory workflow. Do not copy private source, sessions,
   credentials, private logs, signing identities or customer material here.
+- Keep the configured release-control checkout clean. Use a separate private
+  development worktree for source edits and repository-memory records. Never
+  create private `docs/memory/` records in this public repository.
 - Synchronize explicitly, inspect incoming changes and pin an exact source
   commit. When another computer pushes more work, synchronize again and create
   a new release plan. Existing prepared or built candidates keep their original
