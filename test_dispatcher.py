@@ -16,6 +16,12 @@ loader.exec_module(dispatcher)
 
 
 class DispatcherTests(unittest.TestCase):
+    def test_launcher_executes_directly_without_host_configuration(self):
+        result = subprocess.run([str(Path(__file__).with_name("cutswitch-release"))],
+                                text=True, capture_output=True, timeout=15)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn("doctor", result.stdout)
+
     def setUp(self):
         self.scratch = tempfile.TemporaryDirectory(prefix="cutswitch-dispatch-")
         self.addCleanup(self.scratch.cleanup)
