@@ -28,6 +28,19 @@ The workflow's current command help is available with:
 ./cutswitch-release --help
 ```
 
+For an isolated shipping-build-to-candidate update test, the same launcher has a
+QA namespace:
+
+```sh
+./cutswitch-release qa --help
+./cutswitch-release qa prepare --release RELEASE_ID
+```
+
+The private runbook explains the authenticated baseline, attended QA signing,
+and separate native test. QA preparation does not change the stable download,
+launch an app or publish a test feed. Preserve the emitted frozen owner command
+for pending operations after a later source refresh.
+
 Preparation and publication planning leave the current live installer and feed
 unchanged. A new release still requires its affected-workflow and install/update
 checks, the attended Apple/Sparkle steps and a separate owner promotion decision.

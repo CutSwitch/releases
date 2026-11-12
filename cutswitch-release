@@ -70,7 +70,12 @@ def workflow_command(config: Path, arguments: list[str]) -> tuple[list[str], Pat
         origin = origin[:-4]
     if origin.lower() not in EXPECTED_ORIGINS:
         raise DispatchError("Configured app origin must be CutSwitch/cutswitch-app on GitHub.")
-    script = root / "scripts/cutswitch/release_mac.py"
+    # The explicit QA namespace uses the same trusted checkout/configuration.
+    # Neither private driver has a remote publication executor.
+    is_qa = bool(arguments) and arguments[0] == "qa"
+    if is_qa:
+        arguments = arguments[1:] or ["--help"]
+    script = root / "scripts/cutswitch" / ("release_qa.py" if is_qa else "release_mac.py")
     try:
         metadata = script.lstat()
     except OSError:

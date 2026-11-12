@@ -48,6 +48,20 @@ class DispatcherTests(unittest.TestCase):
         self.assertEqual(command[:4], [dispatcher.sys.executable, str(self.script), "--config", str(self.config)])
         self.assertEqual(cwd, self.repo)
 
+    def test_qa_namespace_uses_only_the_checked_private_companion(self):
+        qa = self.script.with_name("release_qa.py")
+        qa.write_text("# inert QA companion\n")
+        qa.chmod(0o644)
+        command, cwd = dispatcher.workflow_command(self.config, ["qa", "prepare", "--release", "example"])
+        self.assertEqual(command, [dispatcher.sys.executable, str(qa), "--config", str(self.config),
+                                   "prepare", "--release", "example"])
+        self.assertEqual(cwd, self.repo)
+
+    def test_qa_namespace_cannot_follow_a_symlinked_companion(self):
+        self.script.with_name("release_qa.py").symlink_to(self.script)
+        with self.assertRaises(dispatcher.DispatchError):
+            dispatcher.workflow_command(self.config, ["qa", "prepare"])
+
     def test_ssh_origin_is_supported(self):
         subprocess.run(["git", "-C", str(self.repo), "remote", "set-url", "origin", "git@github.com:CutSwitch/cutswitch-app.git"], check=True)
         dispatcher.workflow_command(self.config, ["doctor"])
